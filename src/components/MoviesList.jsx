@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const MoviesList = (props) => {
   //Bring the props from the parent App component and destruture the props object
-  const {movies, handleShowClick} = props;
+  const {movies} = props;
 
   //Render the movies title list by iterating on each movie 
   return (
@@ -14,7 +14,6 @@ const MoviesList = (props) => {
               className="list-group-item list-group-item-action"
               key={i}
               to={movie.id.toString()}
-              onClick={() => handleShowClick()}
             >
               <p>{movie.title}</p>
             </Link>

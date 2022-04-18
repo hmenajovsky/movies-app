@@ -4,20 +4,19 @@ import "./App.css";
 import MoviesList from "./components/MoviesList";
 import MovieDetails from "./components/MovieDetails";
 import Search from "./components/Search";
-import json from "./movies.json";
+import MovieDefault from './components/MovieDefault';
+//import json from "./movies.json";
+import axios from "axios";
 
 function App() {
 
   /*STEP 1 and 2 : Fetch the movies list from the provided JSON file*/
-  const jsonMovies = json.results;
+  //const jsonMovies = json.results;
 
-  // Handle the default movie detail view before clicking on a movie link : initiate and use a boolean state value wheter
-  // a movie link has been clicked or not
-  const [clicked, setClicked] = useState(false);
-
-  const showDetail = () => {
-    setClicked(true);
-  };
+  // STEP 3 :  create a state variable for movies and genres list
+  // Initialize them to en empty array
+  const [movies, setMovies] = useState([]);
+  const [genresList, setGenresList] = useState([]);
 
   /* STEP 2 : Fetch the filtered search results by typing a word matching with a title of he list without using the search api */
   // Create a state variable for serached string and initialize it to en empty string
@@ -25,76 +24,64 @@ function App() {
   // Define the filter search callback function which set the search string the state to the value entered into the input field
   const handleFilterSearch = (value) => setSearchedString(value);
 
+  /* STEP 3 : fetch the movies list from the api*/
+  //fetch the movies list before the component is mounted, for example the most popular movies will be displayed here*/
+  useEffect(() => {
+    axios
+      .get(
+        "https://api.themoviedb.org/3/movie/popular?api_key=ec2624e09bf84899d3c3ea754947f60c"
+      )
+      // this endpoint gets the most popular movies from the whole database movies list
+      .then(response => {
+        setMovies(response.data.results);
+      })
+      .catch(e => console.log(e));
+  }, []);
+
+
   let searchedMovies;
-      searchedMovies = jsonMovies;
+      searchedMovies = movies;
     if (searchedString !== "") {
-        const  filteredMovies = jsonMovies.filter(movie => {
+        const  filteredMovies = movies.filter(movie => {
         return movie.title.toLowerCase().includes(searchedString.toLowerCase());
       });
         searchedMovies = filteredMovies.length !== 0 ? filteredMovies: [{id: 675353, title: 'no results found on most popular movies list, click Ok to find on the whole list'}];
     } else {
-      searchedMovies = jsonMovies;
+      searchedMovies = movies;
     }
 
+   // fetch the genres list to display them in the movie details component
+    useEffect(() => {
+
+      axios
+      .get('https://api.themoviedb.org/3/genre/movie/list?api_key=ec2624e09bf84899d3c3ea754947f60c')
+      .then((response) => {      
+      setGenresList(response.data.genres);
+      })
+      .catch((e) => console.log(e));
+    }, [])
 
   //Render the movies list component and create a route displaying the movie detail when clicked into the movies list
-  //Display whatever Movie ( Lord of the ring in my case) by default (before clicking on a movie title link)
+  //Display whatever Movie (Lord of the ring in my case) by default by adding a default movie component for "/" route path
   //Add props to Search component so the searched string variable and the search filter callback can be used in the child Search component
   return (
     <div className="container">
       <div className="row">
         <div className="col movies-list">
           <Search searched = {searchedString} searchFilter = {handleFilterSearch}/>
-          <MoviesList movies={searchedMovies} handleShowClick={showDetail} />
+          <MoviesList movies={searchedMovies} />
         </div>
         <div className="col movie-details">
-          {clicked === false && (
-            <div>
-              <div className="row">
-                <div className="col">
-                  <img
-                    src={
-                      "https://image.tmdb.org/t/p/original/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg"
-                    }
-                    alt="The lord of the rings poster"
-                    style={{ width: "300px" }}
-                  />
-                </div>
-                <div className="col">
-                  <h1>The Lord of the Rings: The Fellowship of the Ring</h1>
-                  <p>
-                    <span className="movie-label">Movie average</span>: {8.4}
-                  </p>
-                  <p>
-                    <span className="movie-label"> Polularity</span>: {167.327}
-                  </p>
-                  <p>
-                    <span className="movie-label">Vote count</span>: {20792}
-                  </p>
-                  <p>
-                    <span className="movie-label">Release date</span>: 2001-12-18
-                  </p>
-                </div>
-              </div>
-              <div className="row">
-                <p>
-                  <span className="movie-label">Overview:</span> Young hobbit Frodo Baggins, after inheriting a
-                  mysterious ring from his uncle Bilbo, must leave his home in
-                  order to keep it from falling into the hands of its evil
-                  creator. Along the way, a fellowship is formed to protect the
-                  ringbearer and make sure that the ring arrives at its final
-                  destination: Mt. Doom, the only place where it can be
-                  destroyed
-                </p>
-              </div>
-            </div>
-          )}
-
           <Routes>
+          <Route
+                path="/"
+                element={<MovieDefault/>}
+              />
+            <Route/>
             <Route path="/">
               <Route
                 path=":id"
-                element={<MovieDetails movies={jsonMovies} />}
+                element={<MovieDetails movies={movies} genres = {genresList} />}
               />
             </Route>
           </Routes>

@@ -13,10 +13,11 @@ input.search {
   margin-right: 5px;
 }
 
+/* MOVIE DETAILS */
+
 .movie-details {
   margin-left: 50px;
   margin-top: 50px !important;
-  /* border: 1px solid red;*/
 }
 
 .movie-details img {
@@ -31,4 +32,8 @@ input.search {
 .movie-details h1 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
+}
+
+.movie-details li {
+  margin-left: 2rem;
 }

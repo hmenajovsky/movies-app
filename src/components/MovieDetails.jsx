@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 
 const MovieDetails = props => {
   //Bring the props from the parent App component and destruture the props object
-  const { movies } = props;
+  const { movies, genres } = props;
 
   //Find the movie from the fetch movies list which had the id matching with the URL parameter one id 
   const params = useParams();
@@ -39,6 +39,13 @@ const MovieDetails = props => {
         </div>
       </div>
       <div className="row">
+      <ul>        
+          <p className="movie-label"> Movie genres:</p>
+          {movie.genre_ids.map((genreId, i) => {
+          return <li key={i}>{genres.filter((genre) => genre.id === genreId)[0].name}</li>;
+          })}
+          </ul>
+
         <p><span className="movie-label">Overview:</span>{" "}{movie.overview}</p>
       </div>
     </>
