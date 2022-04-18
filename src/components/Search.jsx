@@ -1,7 +1,11 @@
 import React from "react";
 import "./../App.css";
 
-const Search = () => {
+const Search = (props) => {
+    //Bring the props from the parent App component and destruture the props object
+  const {searched, searchFilter} = props;
+
+  //STEP2: add the value and the onChange attributes with the fetched searched string value and search filter callback from parent through the props object
   return (
     <nav className="navbar navbar navbar-light bg-light">
       <input
@@ -9,6 +13,9 @@ const Search = () => {
         type="search"
         placeholder="Search"
         aria-label="Search"
+        value={searched}
+        onChange={e => searchFilter(e.target.value)}
+
       />
       <button className="btn btn-sm btn-outline-success">OK</button>
       <button className="btn btn-sm btn-outline-warning">Home</button>

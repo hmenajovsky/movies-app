@@ -19,14 +19,33 @@ function App() {
     setClicked(true);
   };
 
+  /* STEP 2 : Fetch the filtered search results by typing a word matching with a title of he list without using the search api */
+  // Create a state variable for serached string and initialize it to en empty string
+  const [searchedString, setSearchedString] = useState("");
+  // Define the filter search callback function which set the search string the state to the value entered into the input field
+  const handleFilterSearch = (value) => setSearchedString(value);
+
+  let searchedMovies;
+      searchedMovies = jsonMovies;
+    if (searchedString !== "") {
+        const  filteredMovies = jsonMovies.filter(movie => {
+        return movie.title.toLowerCase().includes(searchedString.toLowerCase());
+      });
+        searchedMovies = filteredMovies.length !== 0 ? filteredMovies: [{id: 675353, title: 'no results found on most popular movies list, click Ok to find on the whole list'}];
+    } else {
+      searchedMovies = jsonMovies;
+    }
+
+
   //Render the movies list component and create a route displaying the movie detail when clicked into the movies list
   //Display whatever Movie ( Lord of the ring in my case) by default (before clicking on a movie title link)
+  //Add props to Search component so the searched string variable and the search filter callback can be used in the child Search component
   return (
     <div className="container">
       <div className="row">
         <div className="col movies-list">
-          <Search />
-          <MoviesList movies={jsonMovies} handleShowClick={showDetail} />
+          <Search searched = {searchedString} searchFilter = {handleFilterSearch}/>
+          <MoviesList movies={searchedMovies} handleShowClick={showDetail} />
         </div>
         <div className="col movie-details">
           {clicked === false && (
