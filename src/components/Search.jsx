@@ -7,16 +7,17 @@ const Search = props => {
 
   //STEP2: add the value and the onChange attributes with the fetched searched string value and search filter callback from parent through the props object
   return (
-    <nav className="navbar navbar navbar-light bg-light searchbar">
+    <nav className="navbar navbar bg-dark searchbar"> 
+    <i className="fa fa-search"></i>     
       <input
         className="form-control"
         type="search"
-        placeholder="Search"
+        placeholder= "Search"
         aria-label="Search"
         value={searched}
         onChange={e => searchFilter(e.target.value)}
       />
-      <button className="btn btn-sm btn-outline-success" onClick = { () => searchClick(searched)}>OK</button>
+      <button className="btn btn-sm btn-outline-light" onClick = { () => searchClick(searched)}>OK</button>
     </nav>
   );
 };

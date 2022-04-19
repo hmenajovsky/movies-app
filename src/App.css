@@ -1,17 +1,36 @@
-
+@import url("https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
 
 /* SEARCH BAR */
 
 nav {
-  padding: 5rem 2rem;
+  padding: 10rem 2rem;
 }
 
 .searchbar input {
   width: 80%;
+  padding-left: 2rem;
+}
+
+.searchbar i {
+  position: absolute;
+  left: 2.5rem;
+}
+
+.list-group-item-action:hover {
+  background-color:#343a40 !important;
+  color: white !important;
+}
+
+.list-group-item-action:active {
+  background-color:black !important;
+  color: white !important;
 }
 
 
 /* MOVIE DETAILS */
+
+
+
 
 .movie-details {
   margin-left: 50px;
@@ -28,7 +47,7 @@ nav {
 }
 
 .movie-details h1 {
-  font-size: 1.5rem;
+  font-size: 2rem;
   margin-bottom: 1rem;
 }
 
