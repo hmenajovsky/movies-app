@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import MoviesList from "./components/MoviesList";
 import MovieDetails from "./components/MovieDetails";
 import Search from "./components/Search";
-import MovieDefault from './components/MovieDefault';
-//import json from "./movies.json";
+import MovieDefault from "./components/MovieDefault";
+import json from "./movies.json";
 import axios from "axios";
 
 function App() {
-
   /*STEP 1 and 2 : Fetch the movies list from the provided JSON file*/
-  //const jsonMovies = json.results;
+  const jsonMovies = json.results;
 
   // STEP 3 :  create a state variable for movies and genres list
   // Initialize them to en empty array
@@ -22,10 +21,14 @@ function App() {
   // Create a state variable for serached string and initialize it to en empty string
   const [searchedString, setSearchedString] = useState("");
   // Define the filter search callback function which set the search string the state to the value entered into the input field
-  const handleFilterSearch = (value) => setSearchedString(value);
+  const handleFilterSearch = value => setSearchedString(value);
+
+  //STEP 3-4 : use useNavigate hook to redirect to "/" when click on home button
+  const navigate = useNavigate();
+
 
   /* STEP 3 : fetch the movies list from the api*/
-  //fetch the movies list before the component is mounted, for example the most popular movies will be displayed here*/
+  //Fetch the movies list before the component is mounted, for example the most popular movies will be displayed here*/
   useEffect(() => {
     axios
       .get(
@@ -38,28 +41,56 @@ function App() {
       .catch(e => console.log(e));
   }, []);
 
-
+  /* STEP 2/3-3 : Fetch the filtered search dipslayed results by typing a word matching with a movie title from the json file or most popular movies list */
+  // When no results are found from the most popular movies list, a message is displayed instead the result, inviting to click OK button to get the results from the search API
   let searchedMovies;
-      searchedMovies = movies;
-    if (searchedString !== "") {
-        const  filteredMovies = movies.filter(movie => {
-        return movie.title.toLowerCase().includes(searchedString.toLowerCase());
-      });
-        searchedMovies = filteredMovies.length !== 0 ? filteredMovies: [{id: 675353, title: 'no results found on most popular movies list, click Ok to find on the whole list'}];
-    } else {
-      searchedMovies = movies;
-    }
+  searchedMovies = movies;
+  if (searchedString !== "") {
+    const filteredMovies = movies.filter(movie => {
+      return movie.title.toLowerCase().includes(searchedString.toLowerCase());
+    });
+    searchedMovies =
+      filteredMovies.length !== 0
+        ? filteredMovies
+        : [
+          //a dummy object is used to be able to display the default fallback message result instead the one matchi ng with "undefined" keyword
+            {
+              id: 675353,
+              title:
+                "no results found on most popular movies list, click Ok to find in the whole list"
+            }
+          ];
+  } else {
+    searchedMovies = movies;
+  }
 
-   // fetch the genres list to display them in the movie details component
-    useEffect(() => {
-
-      axios
-      .get('https://api.themoviedb.org/3/genre/movie/list?api_key=ec2624e09bf84899d3c3ea754947f60c')
-      .then((response) => {      
-      setGenresList(response.data.genres);
+  // Fetch the genres list to display their names in the movie details component
+  useEffect(() => {
+    axios
+      .get(
+        "https://api.themoviedb.org/3/genre/movie/list?api_key=ec2624e09bf84899d3c3ea754947f60c"
+      )
+      .then(response => {
+        setGenresList(response.data.genres);
       })
-      .catch((e) => console.log(e));
-    }, [])
+      .catch(e => console.log(e));
+  }, []);
+
+  // STEP 3-4 : fetch the searched list by using the search API on click on the OK search button
+  const handleSearchClick = string => {
+    // redirect to "/" route path since the movie variale is not available anymore otherwise
+    navigate('/');
+    axios
+      .get(
+        "https://api.themoviedb.org/3/search/movie?api_key=ec2624e09bf84899d3c3ea754947f60c&query=" +
+          string
+      )
+      .then(response => {
+        setMovies(response.data.results);
+      })
+      .catch(e => console.log(e));
+  };
+  
 
   //Render the movies list component and create a route displaying the movie detail when clicked into the movies list
   //Display whatever Movie (Lord of the ring in my case) by default by adding a default movie component for "/" route path
@@ -68,20 +99,17 @@ function App() {
     <div className="container">
       <div className="row">
         <div className="col movies-list">
-          <Search searched = {searchedString} searchFilter = {handleFilterSearch}/>
+          <Search searched={searchedString} searchFilter={handleFilterSearch} searchClick = {handleSearchClick} />
           <MoviesList movies={searchedMovies} />
         </div>
         <div className="col movie-details">
           <Routes>
-          <Route
-                path="/"
-                element={<MovieDefault/>}
-              />
-            <Route/>
+            <Route path="/" element={<MovieDefault />} />
+            <Route />
             <Route path="/">
               <Route
                 path=":id"
-                element={<MovieDetails movies={movies} genres = {genresList} />}
+                element={<MovieDetails movies={searchedMovies} genres={genresList} />}
               />
             </Route>
           </Routes>

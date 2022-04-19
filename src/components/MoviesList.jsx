@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
-const MoviesList = (props) => {
+const MoviesList = props => {
   //Bring the props from the parent App component and destruture the props object
-  const {movies} = props;
+  const { movies } = props;
 
-  //Render the movies title list by iterating on each movie 
+  //Render the movies title list by iterating on each movie
   return (
     <>
       <div className="list-group">

@@ -1,17 +1,15 @@
-button {
-  font-size: calc(10px + 2vmin);
-}
+
 
 /* SEARCH BAR */
 
 nav {
-  padding: 5rem 4rem;
+  padding: 5rem 2rem;
 }
 
-input.search {
-  width: 70%;
-  margin-right: 5px;
+.searchbar input {
+  width: 80%;
 }
+
 
 /* MOVIE DETAILS */
 

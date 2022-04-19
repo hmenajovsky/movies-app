@@ -29,7 +29,8 @@ const MovieDefault = () => {
         </div>
       </div>
       <div className="row">
-        <ul><p className="movie-label">Genres:</p>
+        <ul>
+          <p className="movie-label">Genres:</p>
           <li>Adventure</li>
           <li>Fantasy</li>
           <li>Drama</li>
