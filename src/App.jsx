@@ -28,7 +28,7 @@ function App() {
 
 
   /* STEP 3 : fetch the movies list from the api*/
-  //Fetch the movies list before the component is mounted, for example the most popular movies will be displayed here*/
+  //Fetch the movies list when the component did mount, for example the most popular movies will be displayed here*/
   useEffect(() => {
     axios
       .get(
